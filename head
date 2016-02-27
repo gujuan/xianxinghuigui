@@ -1,0 +1,13 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#define MAX 100
+
+void Transposematrix(float *a,float *b,int n,int p);  //矩阵转置//
+void PrintTransposematrix(float *b,int p,int n);
+void Avermatrix(float *a,float *b,int p,int n); //求矩阵列的平均数//
+void Multimatrix(float *a,float *q,float *b,int m,int n,int p);  //矩阵相乘//
+void Cutmatrix(float *a,float *q,float *b,int n,int p);  //矩阵相减求数据变量与其平均值的差异//
+float Surpmatrix(float *A,int m,int n);//求矩阵行列式//
+void Invmatrix(float *A,float *C,int m,int n);//矩阵求逆//
+float for_b0(float *a,float *b,int y_,int n,int p);//由公式'b0=y-b1*x1-b2*x2-b3*x3…-bp*xp'求出b0//
