@@ -1,0 +1,105 @@
+#include "head.h"
+int main()
+{
+    int n,p,i,j,h;
+    float s=0.0;
+    printf("请输入自变量样品总量n和变量p(用逗号隔开)：\n");
+    scanf("%d,%d",&n,&p);
+    float X[n][p];
+
+    printf("请输入数据：\n");
+    for (i=0;i<n;i++)
+    {
+        for (j=0;j<p;j++)
+        {
+            scanf("%g",&X[i][j]);
+        }
+    }
+
+     float Y[n][1],Y_[n][1];
+     printf("请输入因变量Y：\n");
+     for(i=0;i<n;i++)
+     {
+         scanf("%g",&Y[i][0]);
+     }
+     printf("请输入数据是否需要标准化处理，1为需要标准化处理，2为不需要标准化处理\n");
+     //未标准化则所用X矩阵即为愿矩阵，
+     //标准化后的X矩阵为原变量X矩阵的元素减去相应的平均值得到的修正后的矩阵，即矩阵Tp。
+     scanf("%d",&h);
+     printf("\n********************\n");
+     printf("======所输数据X矩阵为：\n");
+    for (i=0;i<n;i++)
+    {
+        for (j=0;j<p;j++)
+        {
+            printf("%g\t",X[i][j]);
+            if ((j+1)%p==0)
+            {
+                printf("\n");
+            }
+        }
+    }
+     printf("======因变量Y矩阵为：\n");
+     for(i=0;i<n;i++)
+     {
+         s=s+Y[i][0];
+         printf("%g\n",Y[i][0]);
+     }
+     //计算Y的平均数及每个元素与平均数相减组成的矩阵//
+      for(i=0;i<n;i++)
+     {
+         Y_[i][0]=Y[i][0]-s/n;
+     }
+
+     printf("\n***********************\n");
+     float Xt[p][n];//矩阵X的转置矩阵//
+     float L[p][p];//矩阵Xt*X//
+     float Xp[p][1];//各变量的平均值//
+     float T[p][n];//矩阵Xt的行向量减去Xp得到的新矩阵(X1)//
+     float B[p][1];//B=Xt*Y_//
+     float b[p][1];//系数矩阵//
+     float Li[p][p];//逆矩阵//
+     float b0;//回归方程的常数//
+     float Tp[n][p];//矩阵T的转置矩阵//
+     Transposematrix(*X,*Xt,n,p);//求X转置矩阵//
+     PrintTransposematrix(*Xt,p,n);
+     printf("\n======X矩阵各变量的平均值是：\n");
+     Avermatrix(*Xt,*Xp,p,n);//求各变量平均值//
+     printf("\n\n\n");
+     switch(h)
+     {
+         case 1:
+     printf("\n系数矩阵b=inv(L)*B\tL、B如下：\n");
+     printf("\n======(L)=X1X  \n");
+     Cutmatrix(*Xt,*Xp,*T,p,n);
+     Transposematrix(*T,*Tp,p,n);
+     Multimatrix(*T,*Tp,*L,p,n,p);
+     printf("\n======inv(L)=  \n");
+     Invmatrix(*L,*Li,p,p);
+     printf("\n======B= \n");
+     Multimatrix(*T,*Y_,*B,p,n,1);
+     printf("\n=======系数矩阵 b=inv(L)*B=  \n");
+     Multimatrix(*Li,*B,*b,p,p,1);
+     printf("\n======='b0=y-b1*x1-b2*x2-b3*x3…-bp*xp':\n");
+     b0=for_b0(*Xp,*b,s/n,p,1);//求常量b0//
+     printf("=======b0=  %g\n",b0);
+         break;
+         case 2:
+     printf("\n======系数矩阵b=inv(L)*B\tL、B如下：\n");
+     printf("\n======(L)=  \n");
+     Multimatrix(*Xt,*X,*L,p,n,p);
+     printf("\n======inv(L)=  \n");
+     Invmatrix(*L,*Li,p,p);
+     printf("\n======B= \n");
+     Multimatrix(*Xt,*Y_,*B,p,n,1);
+     printf("\n=======系数矩阵 b=inv(L)*B=  \n");
+     Multimatrix(*Li,*B,*b,p,p,1);
+     printf("\n======='b0=y-b1*x1-b2*x2-b3*x3…-bp*xp':\n");
+     b0=for_b0(*Xp,*b,s/n,p,1);//求常量b0//
+     printf("=======b0=  %g\n",b0);
+        break;
+        default:
+        printf("输入错误");
+     }
+
+}
